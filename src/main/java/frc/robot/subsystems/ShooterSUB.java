@@ -4,41 +4,41 @@
 
 package frc.robot.subsystems;
 
-import java.io.ObjectInputFilter.Config;
-import java.lang.module.Configuration;
-
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class ShooterSUB extends SubsystemBase {
-  private TalonFX masterMotor;
-  private TalonFX slaveMotor;
+  private final DutyCycleOut dutyCycleControl = new DutyCycleOut(0);
+  private final VelocityVoltage velocityControl = new VelocityVoltage(0);
   
+  private final TalonFX rightMotorMaster;
+  private final TalonFX leftMotorSlave;
 
   public ShooterSUB() {
-    masterMotor = new TalonFX(ShooterConstants.MASTER_MOTOR_PORT, new CANBus(Constants.canivoreName));
-    slaveMotor = new TalonFX(ShooterConstants.SLAVE_MOTOR_PORT, new CANBus(Constants.canivoreName));
+    rightMotorMaster = new TalonFX(ShooterConstants.MASTER_MOTOR_PORT, new CANBus(Constants.canivoreName));
+    leftMotorSlave = new TalonFX(ShooterConstants.SLAVE_MOTOR_PORT, new CANBus(Constants.canivoreName));
 
     configMotors();
 
-    slaveMotor.setControl(
-      new Follower(ShooterConstants.MASTER_MOTOR_PORT, MotorAlignmentValue.Opposed)
-    );
+    rightMotorMaster.setControl(new Follower(ShooterConstants.MASTER_MOTOR_PORT, MotorAlignmentValue.Opposed));
   }
 
   public void configMotors() {
     TalonFXConfiguration talonFXConfig = new TalonFXConfiguration();
 
-    masterMotor.setNeutralMode(NeutralModeValue.Coast);
-    slaveMotor.setNeutralMode(NeutralModeValue.Coast);
+    rightMotorMaster.setNeutralMode(NeutralModeValue.Coast);
+    leftMotorSlave.setNeutralMode(NeutralModeValue.Coast);
 
     talonFXConfig.Slot0.kP = ShooterConstants.kShooterP.get();
     talonFXConfig.Slot0.kI = ShooterConstants.kShooterI.get();
@@ -47,8 +47,8 @@ public class ShooterSUB extends SubsystemBase {
     talonFXConfig.Slot0.kA = ShooterConstants.kShooterA.get();
     talonFXConfig.Slot0.kV = ShooterConstants.kShooterV.get();
 
-    StatusCode statusMaster = masterMotor.getConfigurator().apply(talonFXConfig);
-    StatusCode statusSlave = slaveMotor.getConfigurator().apply(talonFXConfig);
+    StatusCode statusMaster = rightMotorMaster.getConfigurator().apply(talonFXConfig);
+    StatusCode statusSlave = leftMotorSlave.getConfigurator().apply(talonFXConfig);
     for (int i = 0; i < 5; i++) {
       if (statusMaster.isOK() && statusSlave.isOK()) {
         return;
@@ -56,12 +56,43 @@ public class ShooterSUB extends SubsystemBase {
     }
   }
 
-  
+  public void setSpeed(double speed) {
+    rightMotorMaster.setControl(dutyCycleControl.withOutput(speed));
+  }
 
+  public void setTargetRpm(double rpmRotations) {
+    rightMotorMaster.setControl(velocityControl.withVelocity(rpmRotations));
+  }
 
+  public double getCurrentRpm() {
+    return rightMotorMaster.getVelocity().getValueAsDouble() * 60;
+  }
+
+  public boolean isAtTarget() {
+    return Math.abs(ShooterConstants.targetRpm.get() - getCurrentRpm()) < ShooterConstants.kRpmTolerance;
+  }
+
+  public void resetRpm() {
+    rightMotorMaster.setPosition(0);
+  }
+
+  public void stop() {
+    rightMotorMaster.setControl(new DutyCycleOut(0));
+  }
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    if (ShooterConstants.kShooterP.hasChanged()
+        || ShooterConstants.kShooterI.hasChanged()
+        || ShooterConstants.kShooterD.hasChanged()
+        || ShooterConstants.kShooterS.hasChanged()
+        || ShooterConstants.kShooterV.hasChanged()
+        || ShooterConstants.kShooterA.hasChanged()) {
+      configMotors();
+    }
+
+    SmartDashboard.putNumber("Shooter/RPM", getCurrentRpm());
+    SmartDashboard.putBoolean("Shooter/isTarget", isAtTarget());
+
   }
 }
