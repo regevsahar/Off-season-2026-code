@@ -31,7 +31,7 @@ public class ShooterSUB extends SubsystemBase {
 
     configMotors();
 
-    rightMotorMaster.setControl(new Follower(ShooterConstants.MASTER_MOTOR_PORT, MotorAlignmentValue.Opposed));
+    leftMotorSlave.setControl(new Follower(ShooterConstants.MASTER_MOTOR_PORT, MotorAlignmentValue.Opposed));
   }
 
   public void configMotors() {
@@ -61,7 +61,7 @@ public class ShooterSUB extends SubsystemBase {
   }
 
   public void setTargetRpm(double rpmRotations) {
-    rightMotorMaster.setControl(velocityControl.withVelocity(rpmRotations));
+    rightMotorMaster.setControl(velocityControl.withVelocity(rpmRotations / 60));
   }
 
   public double getCurrentRpm() {
