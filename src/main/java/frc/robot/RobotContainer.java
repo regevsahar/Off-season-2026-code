@@ -6,8 +6,8 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commands.ShooterCMD;
-import frc.robot.subsystems.ShooterSUB;
+import frc.robot.commands.shooterCmds.ShooterCMD;
+import frc.robot.subsystems.shooterSub.ShooterSUB;
 
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
