@@ -66,8 +66,8 @@ public class IntakeSUB extends SubsystemBase {
     }
   }
 
-  public void SetMotor(double value) {
-    intakeMotor.setControl(dutyCycleControl.withOutput(value));
+  public void SetMotor(double speed) {
+    intakeMotor.setControl(dutyCycleControl.withOutput(speed));
   }
 
   public void setTargetPosition(double target) {
