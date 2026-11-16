@@ -9,6 +9,7 @@ import frc.robot.subsystems.Intake.IntakeRollerSUB;
 
 public class RobotContainer {
 
+  private final CommandXboxController driver =  new CommandXboxController(Constants.kDriverControllerPort);
   private final CommandXboxController operator =  new CommandXboxController(Constants.kOperatorControllerPort);
 
   private final IntakeRollerSUB Intake = new IntakeRollerSUB();
