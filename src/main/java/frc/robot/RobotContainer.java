@@ -24,8 +24,8 @@ public class RobotContainer {
 
   
   private void configureBindings() {
-    operator.b().whileTrue(openIntake);
-    operator.b().whileTrue(closeIntake);
+    operator.povUp().whileTrue(openIntake);
+    operator.povDown().whileTrue(closeIntake);
   }
 
   public Command getAutonomousCommand() {

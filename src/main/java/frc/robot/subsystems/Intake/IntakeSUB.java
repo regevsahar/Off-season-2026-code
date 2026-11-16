@@ -62,7 +62,7 @@ public class IntakeSUB extends SubsystemBase {
 
     StatusCode status = intakeMotor.getConfigurator().apply(talonFXConfig);
     if (status.isOK()) {
-      System.out.println("Failed to configure TalonFX: " + status);
+      return;
     }
   }
 
