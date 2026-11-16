@@ -6,10 +6,8 @@ package frc.robot.subsystems.coneveyanceSub;
 
 /** Add your docs here. */
 public final class ConveyanceConstants {
-    // לא הפורט האמיתי צריך לבדוק בטיונר. מסוכן
     public final static int CONVEYANCE_MOTOR_ID = 11;
     
     //לא עובר את ה8.4
     public static final double CONVEYANCE_SPEED_VOLTS = 6;
-
 }
