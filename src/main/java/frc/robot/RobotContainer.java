@@ -25,9 +25,7 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-
-    m_driverController.x().whileTrue(hoodCmd);
+    //Button bindings will be configured in the final merge
   }
 
   public Command getAutonomousCommand() {
