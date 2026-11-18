@@ -46,8 +46,8 @@ public class IntakeSUB extends SubsystemBase {
     talonFXConfig.Slot0.kI = IntakeConstants.kIntakeI.get();
     talonFXConfig.Slot0.kD = IntakeConstants.kIntakeD.get();
     talonFXConfig.Slot0.kS = IntakeConstants.kIntakeS.get();
-    talonFXConfig.Slot0.kV = IntakeConstants.kIntakeA.get();
-    talonFXConfig.Slot0.kA = IntakeConstants.kIntakeV.get();
+    talonFXConfig.Slot0.kV = IntakeConstants.kIntakeV.get();
+    talonFXConfig.Slot0.kA = IntakeConstants.kIntakeA.get();
     
     motionMagicConfigs.MotionMagicAcceleration = IntakeConstants.kAcceleration.get();
     motionMagicConfigs.MotionMagicCruiseVelocity = IntakeConstants.kCruiseVelocity.get();
@@ -60,9 +60,11 @@ public class IntakeSUB extends SubsystemBase {
 
     talonFXConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
-    StatusCode status = intakeMotor.getConfigurator().apply(talonFXConfig);
-    if (status.isOK()) {
-      return;
+    for (int i = 0; i < 5; i++) {
+      StatusCode status = intakeMotor.getConfigurator().apply(talonFXConfig);
+      if (status.isOK()) {
+        return;
+      }
     }
   }
 

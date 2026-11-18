@@ -1,7 +1,3 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.subsystems.Hood;
 
 import com.ctre.phoenix6.CANBus;
@@ -40,8 +36,8 @@ public class HoodSUB extends SubsystemBase {
     talonFXConfig.Slot0.kA = HoodConstants.kHoodA.get();
     talonFXConfig.Slot0.kV = HoodConstants.kHoodV.get();
 
-    StatusCode status = hoodMotor.getConfigurator().apply(talonFXConfig);
-    for (int i = 0; i < 5; i++){
+    for (int i = 0; i < 5; i++) {
+      StatusCode status = hoodMotor.getConfigurator().apply(talonFXConfig);
       if (status.isOK()) {
         return;
       }
